@@ -1,39 +1,22 @@
 package com.hththn.dev.department_manager.service;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.gson.GsonFactory;
 import com.hththn.dev.department_manager.dto.request.UserLoginDTO;
-import com.hththn.dev.department_manager.dto.request.UserSsoDTO;
 import com.hththn.dev.department_manager.dto.response.ResLoginDTO;
 import com.hththn.dev.department_manager.exception.UserInfoException;
 import com.hththn.dev.department_manager.repository.UserRepository;
-import com.nimbusds.jose.shaded.gson.Gson;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import com.hththn.dev.department_manager.entity.User;
-import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -42,9 +25,7 @@ public class AuthService {
 
     static String RESPONSE_TYPE = "code";
     static String SCOPE = "email profile";
-//    static String FACEBOOK_SCOPE = "email public_profile";
-    static String GOOGLE_AUTH_URL = "https://accounts.google.com/o/oauth2/auth";
-//    static String FACEBOOK_AUTH_URL = "https://www.facebook.com/v21.0/dialog/oauth";
+
 
     final AuthenticationManagerBuilder authenticationManagerBuilder;
     final UserService userService;
@@ -62,7 +43,7 @@ public class AuthService {
     public ResLoginDTO getLogin(UserLoginDTO loginDto) {
         // Put input including username/password into Security
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                loginDto.getUsername(), loginDto.getPassword());
+                loginDto.getEmail(), loginDto.getPassword());
 
         // authenticate user => need to define loadUserByUsername method
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -73,7 +54,7 @@ public class AuthService {
         ResLoginDTO res = new ResLoginDTO();
 
         // return user's info
-        User currentUserDB = this.userService.getUserByUsername(loginDto.getUsername());
+        User currentUserDB = this.userService.getUserByEmail(loginDto.getEmail());
         if (currentUserDB != null) {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                     currentUserDB.getId(),
@@ -95,7 +76,7 @@ public class AuthService {
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
 
-        User currentUserDB = this.userService.getUserByUsername(email);
+        User currentUserDB = this.userService.getUserByEmail(email);
         ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
         if (currentUserDB != null) {
             userLogin.setId(currentUserDB.getId());

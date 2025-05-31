@@ -1,23 +1,15 @@
 package com.hththn.dev.department_manager.controller;
 
-import com.hththn.dev.department_manager.entity.User;
-import com.hththn.dev.department_manager.exception.UserInfoException;
 import com.hththn.dev.department_manager.service.AuthService;
 import com.hththn.dev.department_manager.service.SecurityUtil;
 import com.hththn.dev.department_manager.dto.response.ResLoginDTO;
 import com.hththn.dev.department_manager.dto.request.UserLoginDTO;
 import com.hththn.dev.department_manager.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 @RestController
 @AllArgsConstructor
@@ -33,10 +25,10 @@ public class  AuthController {
         ResLoginDTO res = this.authService.getLogin(loginDto);
 
         // create refresh token
-        String refresh_token = this.securityUtil.createRefreshToken(loginDto.getUsername(), res);
+        String refresh_token = this.securityUtil.createRefreshToken(loginDto.getEmail(), res);
 
         // update refresh token for user
-        this.userService.updateUserToken(refresh_token, loginDto.getUsername());
+//        this.userService.updateUserToken(refresh_token, loginDto.getEmail());
 
         ResponseCookie resCookies = this.securityUtil.createCookie(refresh_token);
 
