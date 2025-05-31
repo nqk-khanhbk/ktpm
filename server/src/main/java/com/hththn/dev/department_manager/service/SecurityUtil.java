@@ -4,19 +4,14 @@ package com.hththn.dev.department_manager.service;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
-import com.hththn.dev.department_manager.dto.request.UserLoginDTO;
 import com.hththn.dev.department_manager.dto.response.ResLoginDTO;
 import com.hththn.dev.department_manager.entity.User;
 import com.hththn.dev.department_manager.exception.UserInfoException;
 import com.hththn.dev.department_manager.repository.UserRepository;
 import com.nimbusds.jose.util.Base64;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -146,7 +141,7 @@ public class SecurityUtil {
         }
         // issue new token/set refresh token as cookies
         ResLoginDTO res = new ResLoginDTO();
-        User currentUserDB = this.userService.getUserByUsername(email);
+        User currentUserDB = this.userService.getUserByEmail(email);
         if (currentUserDB != null) {
             ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin(
                     currentUserDB.getId(),

@@ -13,9 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -45,7 +43,7 @@ public class UserService {
     }
 
     //Logic get user by email
-    public User getUserByUsername(String username) {
+    public User getUserByEmail(String username) {
         return this.userRepository.findByEmail(username);
     }
 
@@ -84,11 +82,11 @@ public class UserService {
     }
     //Logic create user
     public User createUser(UserCreateRequest userCreateRequest) throws UserInfoException {
-        if (isEmailExist(userCreateRequest.getUsername())) {
-            User existingUser = getUserByUsername(userCreateRequest.getUsername());
+        if (isEmailExist(userCreateRequest.getEmail())) {
+            User existingUser = getUserByEmail(userCreateRequest.getEmail());
             // If user existed and isActive = 1, throw exception
             if (existingUser.getIsActive() == 1) {
-                throw new UserInfoException("User with email " + userCreateRequest.getUsername() + " already exists");
+                throw new UserInfoException("User with email " + userCreateRequest.getEmail() + " already exists");
             }
             // If user existed but isActive = 0, set isActive = 1 and return updated user
             existingUser.setIsActive(1);
@@ -99,12 +97,12 @@ public class UserService {
         user.setName(userCreateRequest.getName());
         String hashPassword = this.passwordEncoder.encode(userCreateRequest.getPassword());
         user.setPassword(hashPassword);
-        user.setEmail(userCreateRequest.getUsername());
+        user.setEmail(userCreateRequest.getEmail());
         user.setAuthType("normal");
         return this.userRepository.save(user);
     }
     public void updateUserToken(String token, String email) {
-        User currentUser = this.getUserByUsername(email);
+        User currentUser = this.getUserByEmail(email);
         if (currentUser != null) {
             currentUser.setRefreshToken(token);
             this.userRepository.save(currentUser);

@@ -13,7 +13,7 @@ import lombok.experimental.FieldDefaults;
 @Builder
 public class UserLoginDTO {
     @NotBlank(message = "username can't be blank")
-    String username;
+    String email;
 
     @NotBlank(message = "password can't be blank")
     String password;

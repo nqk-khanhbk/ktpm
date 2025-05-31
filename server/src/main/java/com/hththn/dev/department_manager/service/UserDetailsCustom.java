@@ -21,8 +21,8 @@ public class UserDetailsCustom implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.hththn.dev.department_manager.entity.User user = this.userService.getUserByUsername(username);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        com.hththn.dev.department_manager.entity.User user = this.userService.getUserByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException("Username/password is not valid");
         }

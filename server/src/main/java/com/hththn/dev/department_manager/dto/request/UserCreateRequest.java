@@ -14,9 +14,9 @@ import lombok.experimental.FieldDefaults;
 public class UserCreateRequest {
     @NotBlank(message = "name can't be blank")
     String name;
-    @NotBlank(message = "username can't be blank")
-    @Email(message = "username must be a valid email")
-    String username;
+    @NotBlank(message = "email can't be blank")
+    @Email(message = "email must be a valid email")
+    String email;
     @NotBlank(message = "password can't be blank")
     @Size(min = 6, message = "password must have at least 6 characters")
     String password;
